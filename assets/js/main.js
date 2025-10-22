@@ -67,4 +67,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 다른 페이지 공통 로직 (필요하다면 여기에 추가)
+// ... (기존 diseaseData, document.addEventListener('DOMContentLoaded', ...) 등의 코드)
+
+/**
+ * @function initKakaoMapAndSearch
+ * 카카오 맵을 초기화하고 현재 위치 기반으로 주변 병원을 검색합니다.
+ * 이 함수는 hospital-finder.html의 searchHospitals()에서 호출됩니다.
+ */
+function initKakaoMapAndSearch() {
+    const mapContainer = document.getElementById('map');
+    let mapOption = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667), // 기본 중심 좌표 (제주도)
+        level: 3 // 지도의 확대 레벨
+    };
+    
+    // 맵 객체 생성
+    const map = new kakao.maps.Map(mapContainer, mapOption); 
+    
+    // 장소 검색 객체 생성 (병원 검색을 위해 'services' 라이브러리가 필요)
+    const ps = new kakao.maps.services.Places();  
+
+    // HTML5의 Geolocation API를 사용하여 현재 위치를 얻어옵니다.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const locPosition = new kakao.maps.LatLng(lat, lon); // 현재 위치 좌표
+
+            // 지도 중심을 현재 위치로 이동
+            map.setCenter(locPosition);
+
+            // 현재 위치에 마커 표시
+            new kakao.maps.Marker({
+                map: map,
+                position: locPosition
+            }).setMap(map);
+            
+            // ⭐️ 현재 위치 주변 동물병원 검색 시작
+            searchNearbyHospitals(ps, map, locPosition);
+
+        }, (error) => {
+            // 위치 정보를 가져오는 데 실패했을 경우
+            alert("위치 정보를 가져오는 데 실패했습니다. 기본 위치로 병원을 검색합니다.");
+            searchNearbyHospitals(ps, map, mapOption.center); // 기본 위치에서 검색
+        }, {
+            enableHighAccuracy: false,
+            maximumAge: 0,
+            timeout: 5000
+        });
+    } else {
+        alert("Geolocation을 지원하지 않아, 기본 위치로 병원을 검색합니다.");
+        searchNearbyHospitals(ps, map, mapOption.center); // 기본 위치에서 검색
+    }
+}
+
+/**
+ * @function searchNearbyHospitals
+ * 카카오 장소 검색 API를 이용하여 주변 동물병원을 검색하고 지도에 표시합니다.
+ */
+function searchNearbyHospitals(ps, map, center) {
+    const keyword = document.getElementById('hospital-search').value || "동물병원";
+
+    // 키워드로 주변 검색 요청 (좌표 기준 1km 이내)
+    ps.keywordSearch(keyword, (data, status, pagination) => {
+        if (status === kakao.maps.services.Status.OK) {
+            
+            const hospitalListEl = document.getElementById('hospital-list');
+            const resultsListEl = hospitalListEl.querySelector('.hospital-results') || document.createElement('ul');
+            resultsListEl.classList.add('hospital-results');
+            resultsListEl.innerHTML = '';
+            
+            let bounds = new kakao.maps.LatLngBounds(); // 마커들을 포함할 영역
+
+            data.forEach((place) => {
+                // 1. 리스트에 항목 추가
+                const li = document.createElement('li');
+                li.classList.add('hospital-item');
+                li.innerHTML = `
+                    <strong>${place.place_name}</strong>
+                    <p>주소: ${place.address_name}</p>
+                    <p>연락처: ${place.phone || '정보 없음'}</p>
+                    <a href="${place.place_url}" target="_blank">상세 정보 (카카오맵)</a>
+                `;
+                resultsListEl.appendChild(li);
+
+                // 2. 지도에 마커 표시
+                const position = new kakao.maps.LatLng(place.y, place.x);
+                new kakao.maps.Marker({
+                    map: map,
+                    position: position
+                });
+                
+                bounds.extend(position);
+            });
+            
+            // 검색된 병원들이 보이도록 지도의 경계를 재설정
+            map.setBounds(bounds);
+            
+            if(!hospitalListEl.querySelector('.hospital-results')) {
+                hospitalListEl.appendChild(resultsListEl);
+            }
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            alert('주변에서 검색 결과가 없습니다.');
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            alert('병원 검색 중 오류가 발생했습니다.');
+        }
+    }, {
+        location: center, // 검색 중심 좌표
+        radius: 1000, // 1km 반경
+        sort: kakao.maps.services.SortBy.DISTANCE // 거리순 정렬
+    });
+}
 });
