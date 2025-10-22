@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주변 동물병원 찾기 - 멍이 진단소</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5fd26dca43a1736858f02521d2429840&libraries=services"></script>
+
+</head>
+<body>
+    <header class="sub-header">
+        <a href="index.html">홈으로</a>
+        <h1>주변 동물병원 찾기</h1>
+    </header>
+
+    <main class="hospital-finder-container">
+        <div class="search-and-filter">
+            </div>
+
+        <div id="map" class="map-placeholder">
+            </div>
+
+        <div id="hospital-list">
+            </div>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // main.js에 구현된 searchHospitals() 함수를 호출할 것입니다.
+        function searchHospitals() {
+             // 지도 API 검색 로직을 실행합니다. (main.js 또는 별도 파일에 구현 필요)
+            if (typeof initKakaoMapAndSearch === 'function') {
+                initKakaoMapAndSearch();
+            } else {
+                alert("병원 검색 기능을 실행합니다. (지도 API 및 위치 기반 로직 필요)");
+            }
+        }
+    </script>
+</body>
+</html>
