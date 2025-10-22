@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주변 동물병원 찾기 - 진단 웹사이트</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+<body>
+    <header class="sub-header">
+        <a href="index.html">홈으로</a>
+        <h1>주변 동물병원 찾기</h1>
+    </header>
+
+    <main class="hospital-finder-container">
+        <div class="search-and-filter">
+            <input type="text" id="hospital-search" placeholder="병원 이름, 지역 검색">
+            <select id="filter-options">
+                <option value="all">전체</option>
+                <option value="24h">24시간 운영</option>
+                <option value="surgery">수술 전문</option>
+                <option value="parking">주차 가능</option>
+            </select>
+            <button onclick="searchHospitals()">검색</button>
+        </div>
+
+        <div id="map-area" class="map-placeholder">
+
+            <p>현재 위치 기반으로 주변 동물병원을 지도에 표시합니다. (지도 API 연동 필요)</p>
+        </div>
+
+        <div id="hospital-list">
+            <h3>검색 결과 (예시)</h3>
+            <ul class="hospital-results">
+                <li class="hospital-item">
+                    <strong>멍멍 종합 동물병원</strong>
+                    <p>주소: 서울시 강남구 논현동</p>
+                    <p>연락처: 02-1234-5678</p>
+                    <a href="#">상세 정보 / 리뷰 보기</a>
+                </li>
+                </ul>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 멍이 진단소.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // 지도 API 초기화 및 검색 로직 (main.js 또는 별도 파일에 구현 필요)
+        function searchHospitals() {
+            alert("병원 검색 기능을 실행합니다. (지도 API 및 위치 기반 로직 필요)");
+            // 실제 API 호출 및 지도/리스트 업데이트 로직 삽입
+        }
+    </script>
+</body>
+</html>
