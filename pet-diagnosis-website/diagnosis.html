@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>증상 진단 - 진단 웹사이트</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="sub-header">
+        <a href="index.html">홈으로</a>
+        <h1>증상 진단</h1>
+    </header>
+
+    <main class="diagnosis-container">
+        <div id="diagnosis-form">
+            <p id="current-question">로딩 중...</p>
+            <div id="answer-options" class="options-container">
+                </div>
+            <button id="next-button" disabled>다음 단계</button>
+        </div>
+
+        <div id="diagnosis-result" style="display: none;">
+            <h2>💡 예상 진단 결과</h2>
+            <ul id="disease-list">
+                </ul>
+            <p class="disclaimer">
+                **주의:** 본 결과는 참고 정보이며, **정확한 진단은 반드시 동물병원 방문을 통해 수의사와 상담**하시기 바랍니다.
+            </p>
+            <button onclick="window.location.reload()">새 진단 시작하기</button>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 진단 웹사이트.</p>
+    </footer>
+
+    <script src="assets/js/diagnosis-logic.js"></script>
+</body>
+</html>
