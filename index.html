@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOGTOR - 강아지 질병 자가진단</title>
+    
+    <!-- Tailwind CSS (디자인 도구) 불러오기 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 아이콘 도구 불러오기 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- 카카오 지도 API -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5fd26dca43a1736858f02521d2429840&libraries=services"></script>
+    <!-- 내가 만든 스타일 불러오기 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- [헤더] 로고와 메뉴 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- 로고 영역 -->
+            <button onclick="showPage('home')" class="flex items-center gap-2 group hover:opacity-80 transition-opacity">
+                <img src="logo.png" alt="DOGTOR 로고" class="h-10">
+            </button>
+
+            <!-- 메뉴 -->
+            <nav class="flex gap-4 text-sm font-bold text-gray-500">
+                <button onclick="showPage('home')" class="hover:text-black transition-colors">HOME</button>
+                <button onclick="showPage('info')" class="hover:text-black transition-colors">건강정보</button>
+                <button onclick="showPage('map')" class="hover:text-black transition-colors">병원찾기</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- [메인 콘텐츠] 페이지들이 여기에 들어갑니다 -->
+    <main class="max-w-6xl mx-auto min-h-screen bg-white shadow-2xl border-x border-gray-100">
+
+        <!-- 1. 메인 페이지 (HOME) -->
+        <section id="page-home" class="page-section px-6 py-10 text-center flex flex-col items-center justify-center min-h-screen">
+            <div class="mb-8 p-4 bg-blue-50 rounded-full animate-bounce-slow">
+                <i data-lucide="activity" class="w-12 h-12 md:w-16 md:h-16 text-blue-600"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+                우리 강아지,<br>혹시 아픈 건 아닐까요?
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-600 font-medium mb-12 relative inline-block">
+                <span class="relative z-10">3분 간단 검사로 진단을 받아보세요!</span>
+                <span class="absolute bottom-1 left-0 w-full h-3 bg-blue-100 opacity-70"></span>
+            </p>
+            <button onclick="startDiagnosis()" class="w-full max-w-xs md:max-w-md bg-gray-900 text-white text-xl md:text-2xl font-bold py-5 md:py-6 rounded-2xl shadow-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
+                진단 받기 <i data-lucide="arrow-right" class="w-5 h-5 md:w-6 md:h-6"></i>
+            </button>
+        </section>
+
+        <!-- 2. 건강 정보 페이지 (INFO) -->
+        <section id="page-info" class="page-section hidden p-6 md:p-10">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">질병 백과</h2>
+            <!-- 카테고리 버튼들이 자바스크립트로 여기에 들어갑니다 -->
+            <div id="category-container" class="flex flex-wrap gap-2 mb-8"></div>
+            <!-- 질병 리스트가 여기에 나타납니다 -->
+            <div id="disease-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- 3. 병원 찾기 페이지 (MAP) -->
+        <section id="page-map" class="page-section hidden p-6 md:p-10 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold">병원 찾기</h2>
+                <span class="text-xs font-bold bg-gray-100 px-3 py-1 rounded-lg">거리순</span>
+            </div>
+            <!-- 지도 영역 -->
+            <div id="map" class="w-full aspect-[4/3] md:aspect-[16/9] rounded-2xl relative overflow-hidden shadow-inner mb-6"></div>
+            <!-- 병원 리스트 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">튼튼 동물병원</h3>
+                        <p class="text-xs text-green-600 font-bold mt-1">● 진료중 <span class="text-gray-400 font-normal">0.5km</span></p>
+                    </div>
+                    <button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100"><i data-lucide="phone" class="w-4 h-4"></i></button>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-gray-800">24시 사랑 응급센터</h3>
+                        <p class="text-xs text-gray-500 font-bold mt-1">○ 휴진 <span class="text-gray-400 font-normal">1.2km</span></p>
+                    </div>
+                    <button class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center hover:bg-gray-100"><i data-lucide="phone" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 진단 설문 페이지 (DIAGNOSIS) -->
+        <section id="page-diagnosis" class="page-section hidden p-6 md:p-10 flex flex-col h-full max-w-3xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <button onclick="prevQuestion()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                <div class="flex-1 mx-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-black transition-all duration-300" style="width: 10%"></div>
+                </div>
+                <span id="question-count" class="text-xs md:text-sm font-bold text-gray-400">1 / 9</span>
+            </div>
+
+            <div id="question-container" class="flex-grow flex flex-col justify-center">
+                <!-- 질문 내용이 자바스크립트로 들어옵니다 -->
+            </div>
+
+            <button id="btn-next" onclick="nextQuestion()" class="mt-8 w-full bg-black text-white py-4 md:py-5 rounded-2xl font-bold text-lg md:text-xl disabled:bg-gray-300 transition-colors">
+                다음으로
+            </button>
+        </section>
+
+        <!-- 5. 결과 페이지 (RESULT) -->
+        <section id="page-result" class="page-section hidden p-6 md:p-10 pb-10 max-w-3xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-blue-100 rounded-full mb-4">
+                    <i data-lucide="check" class="w-8 h-8 md:w-10 md:h-10 text-blue-600"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">분석 완료</h2>
+                <p class="text-gray-500 md:text-lg">입력하신 증상을 바탕으로 분석된 결과입니다.</p>
+            </div>
+
+            <div id="result-content"></div>
+
+            <div class="flex flex-col md:flex-row gap-3 mt-8">
+                <button onclick="showPage('map')" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 hover:bg-gray-800">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i> 내 주변 동물병원 찾기
+                </button>
+                <button onclick="startDiagnosis()" class="w-full bg-white text-gray-600 border border-gray-300 py-4 rounded-2xl font-bold hover:bg-gray-50">
+                    다시 진단하기
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-gray-900 text-gray-500 py-8 text-center text-xs">
+        <p class="font-bold text-gray-400 mb-1">DOGTOR Project</p>
+        <p>본 결과는 참고용이며, 정확한 진단은 수의사와 상담하세요.</p>
+    </footer>
+
+    <!-- 로직 파일 연결 -->
+    <script src="script.js"></script>
+</body>
+</html>
